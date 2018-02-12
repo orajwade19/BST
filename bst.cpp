@@ -25,10 +25,63 @@ public:
 
 	void display()
 	{
-		cout<<"\n"<<data;
+		cout<<data<<"  ";
 	}
 };
 
+class queue
+{
+	private:
+		node* arrq[30];
+		int front,back;
+	public:
+		queue()
+	{
+			front=0;
+			back=0;
+	}
+		void push(node* pushed)
+		{
+			arrq[back++] = pushed;
+		}
+
+		node* delet()
+		{
+			return arrq[front++];
+		}
+
+		int isEmpty()
+		{
+			if(front==back)
+				return 1;
+			return 0;
+		}
+};
+class stack
+{
+private:
+	node* arr[30];
+	int top;
+public:
+	stack()
+{
+		top=-1;
+}
+	void push(node* q)
+	{
+		arr[++top] = q;
+	}
+	node* pop()
+	{
+		return arr[top--];
+	}
+	int isEmpty()
+	{
+		if(top==-1)
+			return 1;
+		return 0;
+	}
+};
 class bst {
 private:
 	node* root;
@@ -171,15 +224,69 @@ public:
 	{
 		swap(root);
 	}
+	void bfs()
+	{
+		queue p,q;
+		p.push(root);
+		while(!p.isEmpty())
+		{
+			while(!p.isEmpty())
+			{
+			 node* temp = p.delet();
+			 temp->display();
+			 if(temp->left!=NULL)
+				 q.push(temp->left);
+			 if(temp->right!=NULL)
+				 q.push(temp->right);
+			}
+			cout<<"\n";
+			while(!q.isEmpty())
+			{
+				p.push(q.delet());
+			}
+		}
+	}
+	void nrSwap()
+	{
+		stack s;
+		node* temp = root;
+		s.push(temp);
+		while(!s.isEmpty())
+		{
+			node* temp = s.pop();
+			node* temp2 = temp->right;
+			if(temp->left!=NULL)
+				s.push(temp->left);
+			if(temp->right!=NULL)
+				s.push(temp->right);
+			temp->right = temp->left;
+			temp->left = temp2;
+		}
+	}
+	int nrSearch(int searched)
+	{
+		node* temp = root;
+		while(temp!=NULL)
+		{
+			if(temp->data==searched)
+				return 1;
+			if(searched<temp->data)
+				temp = temp->left;
+			if(searched>temp->data)
+				temp = temp->right;
+		}
+		return 0;
+	}
 };
 
 int main()
 {
 	bst k;
 	int choice;
+	int searched;
 	do
 	{
-		cout<<"\n1.Create BST\n2.Insert number\n3.Number of nodes in the longest path\n4.Minimum data value in tree\n5.Swap left and right pointers\n6.Search\n7.Exit";
+		cout<<"\n1.Create BST\n2.Insert number\n3.Number of nodes in the longest path\n4.Minimum data value in tree\n5.Swap left and right pointers non-recursively\n6.Search recursively\n7.BFS\n8.Display\n9.Swap left and right pointers recursively\n10.Search non-recursively\n11.Exit";
 		cin>>choice;
 		switch(choice)
 		{
@@ -196,17 +303,35 @@ int main()
 			k.minimum();
 			break;
 		case 5:
-			k.swap();
+			k.nrSwap();
 			break;
 		case 6:
 			k.search();
 			break;
 		case 7:
+			k.bfs();
+			break;
+		case 8:
+			k.display_inorder();
+			break;
+		case 9:
+			k.swap();
+			break;
+		case 10:
+			cout<<"\nEnter Number To Be Searched: ";
+			cin>>searched;
+			searched = k.nrSearch(searched);
+			if(searched==1)
+				cout<<"\nNumber Found!";
+			else
+				cout<<"\nNumber not found.";
+			break;
+		case 11:
 			break;
 		default:
 			cout<<"\nEntered choice must be in the 1-7 range.";
 			break;
 		}
-	}while(choice!=7);
+	}while(choice!=11);
 }
 
